@@ -1,10 +1,12 @@
 import { Router } from "express";
+import { AuthController } from "./auth.controller";
 
 export class AuthRoutes {
     static get routes(): Router {
         const router = Router()
+        const controller: AuthController = new AuthController()
 
-        router.post("/register", )
+        router.post("/register", controller.register )
 
         return router
     }
