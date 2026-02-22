@@ -1,10 +1,11 @@
 import { Router } from "express";
+import { AuthRoutes } from "../modules/auth/auth.routes.js";
 
 export class AppRoutes {
     static get routes(): Router {
         const router = Router()
         
-        router.use("/api/auth")
+        router.use("/api/auth", AuthRoutes.routes )
 
         return router
     }
