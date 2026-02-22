@@ -1,4 +1,4 @@
-import { configEnv } from "./config/config.env.js"
+import { configEnv } from "./config/env.config.js"
 import { AppRoutes } from "./presentation/routes.js"
 import { Server } from "./presentation/server.js"
 
