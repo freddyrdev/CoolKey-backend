@@ -1,0 +1,8 @@
+.env
+/database
+node_modules/
+postgres/
+dist/
+build/
+converage/
+package-lock.json
