@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { AuthService } from "./auth.service.js";
+import type { Usuario } from "./interface.js";
 
 export class AuthController {
     private readonly servicio: AuthService
@@ -8,10 +9,11 @@ export class AuthController {
         this.servicio = new AuthService()
     }
 
-    public register = (req: Request, res: Response) => {
-        const [error, servicio ] = this.servicio.register()
+    public register = async(req: Request, res: Response) => {
+        const data: Usuario = req.body
+        const [ codigo, error, servicio ] = await this.servicio.register( data )
 
-        if( error ) return res.status(400).json({ error })
+        if( error ) return res.status( Number(codigo) ).json({ error })
         res.json({ servicio })
     }
 }
