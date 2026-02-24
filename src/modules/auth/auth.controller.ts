@@ -14,6 +14,6 @@ export class AuthController {
         const [ codigo, error, servicio ] = await this.servicio.register( data )
 
         if( error ) return res.status( Number(codigo) ).json({ error })
-        res.json({ servicio })
+        res.status( Number(codigo) ).json({ servicio })
     }
 }

@@ -17,10 +17,13 @@ export class AuthService{
         if( !contrasenia || contrasenia.length < 6  ) return [ 400, "La contraseña debe tener 6 caracteres" ]
 
         try{
-            const contraseniaHash = Hash.hashear( contrasenia )
-            // const usuario = await this.repoAuth.crearUsuario({ email, usuario, contrasenia: contraseniaHash })
+            const [ codigo, error, contraseniaHash ] = await Hash.hashear( contrasenia )
+            if( error ) return [ codigo, error ]
+            if( typeof contraseniaHash !== "string" ) return [ 500, "Error interno al crear la contraseña" ] 
 
-            if( !usuario || usuario.length === 0 ){
+            const usuarioCreado = await this.repoAuth.crearUsuario({ contrasenia: contraseniaHash , email, usuario })
+
+            if( !usuarioCreado || usuarioCreado.length === 0 ){
                 return [ 400, "Error al crear el usuario en la base de datos" ]
             }
         }catch (error: any){
