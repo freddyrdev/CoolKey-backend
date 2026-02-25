@@ -56,15 +56,15 @@ export class AuthService{
         if( !contrasenia ) return [ 400, "La contraseña es requerida" ]
 
         const usuarioRegistrado: Usuario = await this.repoAuth.buscarPorUnDato({ email, usuario })
-        if( !usuarioRegistrado ) return [ "Credenciales incorrectas" ]
+        if( !usuarioRegistrado ) return [ 400, "Credenciales incorrectas" ]
         if( !usuarioRegistrado.contrasenia ) return [ 400, "La contraseña es invalida" ]
         
         const comparacionHash = await Hash.comparar(contrasenia, usuarioRegistrado.contrasenia)
-        if( !comparacionHash ) return [ 400, "La contraseña es invalida" ]
+        if( !comparacionHash[2] ) return [ 400, "La contraseña es invalida" ]
 
         const token = await JWTAdapter.generateToken({ contrasenia , email, usuario })
         if( !token ) return [ 500, "No se pudo generar el token" ]
 
-        return [ 200, undefined, { usuario: { id: usuarioRegistrado.id, email, usuario }, token }]
+        return [ 200, undefined, { usuario: { id: usuarioRegistrado.id, email: usuarioRegistrado.email, usuario: usuarioRegistrado.usuario }, token }]
     }
 }

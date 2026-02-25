@@ -17,5 +17,11 @@ export class AuthController {
         res.status( Number(codigo) ).json( servicio )
     }
 
-    
+    public login = async(req: Request, res: Response) => {
+        const data: Usuario = req.body
+        const [ codigo, error, servicio ] = await this.servicio.login( data )
+
+        if( error ) return res.status( Number(codigo) ).json({ error })
+        res.status( Number(codigo) ).json( servicio )
+    }
 }
