@@ -1,3 +1,5 @@
+import { JWTAdapter } from "../../config/jwt.adapter.js";
+import { regulatExps } from "../../config/regular-exp.js";
 import { Hash } from "../../utils/hash.utils.js";
 import type { Usuario } from "./interface.js";
 import { AuthRepository } from "./repository/auth.repository.js";
@@ -10,26 +12,38 @@ export class AuthService{
     }
 
     public async register( data: Usuario ){
+        if ( !data || Object.keys(data).length === 0 ) return [ 400, "El cuerpo de la petición está vacío" ];
         const { email, contrasenia, usuario } = data
+
         if( !email ) return [ 400, "El email es requerido" ]
+        if( !regulatExps.email.test(email) ) return [ 400, "El formato del email es invalido" ]
         if( !usuario ) return [ 400, "El usuario es requerido" ]
-        if( !contrasenia ) return [ 400, "La contraña es requerida" ]
+        if( !contrasenia ) return [ 400, "La contraseña es requerida" ]
         if( !contrasenia || contrasenia.length < 6  ) return [ 400, "La contraseña debe tener 6 caracteres" ]
 
-        try{
-            const [ codigo, error, contraseniaHash ] = await Hash.hashear( contrasenia )
-            if( error ) return [ codigo, error ]
-            if( typeof contraseniaHash !== "string" ) return [ 500, "Error interno al crear la contraseña" ] 
+        const usuarioExistente = await this.repoAuth.buscarPorUnDato({ id: null, email, usuario })
+        if( usuarioExistente ) return [ 400, `El usuario ya existe` ]
 
-            const usuarioCreado = await this.repoAuth.crearUsuario({ contrasenia: contraseniaHash , email, usuario })
+        const [ codigo, error, contraseniaHash ] = await Hash.hashear( contrasenia )
+        if( error ) return [ codigo, error ]
+        if( typeof contraseniaHash !== "string" ) return [ 500, "Error interno al crear la contraseña" ] 
 
-            if( !usuarioCreado || usuarioCreado.length === 0 ){
-                return [ 400, "Error al crear el usuario en la base de datos" ]
-            }
-        }catch (error: any){
-            return [ 500, `Error interno al crear la cuenta ${ error }` ]
-        }
+        const fila = await this.repoAuth.crearUsuario({ contrasenia: contraseniaHash , email, usuario })
+        const usuarioCreado = fila[0] as Usuario | undefined
+        if( !usuarioCreado ) return [ 500, `Error al obtener el usuario creado` ]
 
-        return [ 201, undefined, { "exito": "Cuenta creada con exito." } ]
+        const tokenSesion = await JWTAdapter.generateToken({ 
+            id: usuarioCreado.id, 
+            email: usuarioCreado.email, 
+            usuario: usuarioCreado.usuario 
+        })
+
+        return [ 201, undefined, { 
+            message: "Cuenta creada con exito.", 
+            usuario: { id: usuarioCreado.id, 
+                email: usuarioCreado.email, 
+                usuario: usuarioCreado.usuario 
+            }, token: tokenSesion } 
+        ]
     }
 }

@@ -1,5 +1,7 @@
 import express, { Router } from 'express';
 import { Database } from '../database/init-db.js';
+import cors from 'cors'
+
 interface Opciones {
     port: number,
     routes: Router
@@ -20,6 +22,12 @@ export class Server{
     
     async start(){
         await this.database.iniciar()
+
+        this.app.use(cors({
+            origin: 'http://localhost:5173',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
 
         this.app.use( express.json() ) // Cargar raw
         this.app.use( express.urlencoded({ extended: true }))

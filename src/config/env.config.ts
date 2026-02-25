@@ -8,4 +8,5 @@ export const configEnv = {
     DATABASE_PASSWORD: env.get('DATABASE_PASSWORD').required().asString(),
     DATABASE_NAME: env.get('DATABASE_NAME').required().asString(),
     DATABASE_PORT: env.get('DATABASE_PORT').required().asPortNumber(),
+    JWT_SEED: env.get('JWT_SEED').required().asString(),
 }

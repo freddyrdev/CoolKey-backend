@@ -1,6 +1,6 @@
 export interface Usuario {
-    id?: number,
+    id?: number | null,
     email: string,
     usuario: string,
-    contrasenia: string,
+    contrasenia?: string,
 }
