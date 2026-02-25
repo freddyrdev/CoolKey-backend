@@ -21,7 +21,7 @@ export class AuthService{
         if( !contrasenia ) return [ 400, "La contraseña es requerida" ]
         if( !contrasenia || contrasenia.length < 6  ) return [ 400, "La contraseña debe tener 6 caracteres" ]
 
-        const usuarioExistente = await this.repoAuth.buscarPorUnDato({ id: null, email, usuario })
+        const usuarioExistente = await this.repoAuth.buscarPorUnDato({ email, usuario })
         if( usuarioExistente ) return [ 400, `El usuario ya existe` ]
 
         const [ codigo, error, contraseniaHash ] = await Hash.hashear( contrasenia )
@@ -40,10 +40,31 @@ export class AuthService{
 
         return [ 201, undefined, { 
             message: "Cuenta creada con exito.", 
-            usuario: { id: usuarioCreado.id, 
+            usuario: { 
+                id: usuarioCreado.id, 
                 email: usuarioCreado.email, 
                 usuario: usuarioCreado.usuario 
             }, token: tokenSesion } 
         ]
+    }
+
+    public async login( data: Usuario ){
+        if ( !data || Object.keys(data).length === 0 ) return [ 400, "El cuerpo de la petición está vacío" ];
+        const { usuario, email, contrasenia } = data
+
+        if( !usuario && !email ) return [ 400, "El nombre o el correo es requerido" ]
+        if( !contrasenia ) return [ 400, "La contraseña es requerida" ]
+
+        const usuarioRegistrado: Usuario = await this.repoAuth.buscarPorUnDato({ email, usuario })
+        if( !usuarioRegistrado ) return [ "Credenciales incorrectas" ]
+        if( !usuarioRegistrado.contrasenia ) return [ 400, "La contraseña es invalida" ]
+        
+        const comparacionHash = await Hash.comparar(contrasenia, usuarioRegistrado.contrasenia)
+        if( !comparacionHash ) return [ 400, "La contraseña es invalida" ]
+
+        const token = await JWTAdapter.generateToken({ contrasenia , email, usuario })
+        if( !token ) return [ 500, "No se pudo generar el token" ]
+
+        return [ 200, undefined, { usuario: { id: usuarioRegistrado.id, email, usuario }, token }]
     }
 }

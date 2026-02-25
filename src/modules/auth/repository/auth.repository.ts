@@ -13,7 +13,7 @@ export class AuthRepository {
     }
 
     public async buscarPorUnDato( data: Usuario ){
-        const { id, email, usuario } = data
+        const { id = null, email = null, usuario = null } = data
         const query = `
             SELECT id, email, usuario, contrasenia FROM usuarios WHERE id = $1 OR email = $2 OR usuario = $3 LIMIT 1
         `

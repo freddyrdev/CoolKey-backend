@@ -16,4 +16,6 @@ export class AuthController {
         if( error ) return res.status( Number(codigo) ).json({ error })
         res.status( Number(codigo) ).json( servicio )
     }
+
+    
 }
