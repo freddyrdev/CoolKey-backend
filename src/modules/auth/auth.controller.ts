@@ -24,4 +24,22 @@ export class AuthController {
         if( error ) return res.status( Number(codigo) ).json({ error })
         res.status( Number(codigo) ).json( servicio )
     }
+
+    public perfil = async(req: Request, res: Response) => {
+        const { id }: Usuario = req.userContext
+        const [ codigo, error, servicio ] = await this.servicio.perfil( id ?? null )
+
+        if( error ) return res.status( Number(codigo) ).json({ error })
+        res.status( Number(codigo) ).json( servicio )
+    }
+
+    public perfilImg = async(req: Request, res: Response) => {
+        const urlDeNube = req.file?.path
+        const data: Usuario = req.userContext
+
+        const [ codigo, error, servicio ] = await this.servicio.perfilImg( urlDeNube, data )
+
+        if( error ) return res.status( Number(codigo) ).json({ error })
+        res.status( Number(codigo) ).json( servicio )
+    }
 }

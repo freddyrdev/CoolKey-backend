@@ -62,9 +62,28 @@ export class AuthService{
         const comparacionHash = await Hash.comparar(contrasenia, usuarioRegistrado.contrasenia)
         if( !comparacionHash[2] ) return [ 400, "La contraseña es invalida" ]
 
-        const token = await JWTAdapter.generateToken({ contrasenia , email, usuario })
+        const token = await JWTAdapter.generateToken({ id: usuarioRegistrado.id, email: usuarioRegistrado.email, usuario: usuarioRegistrado.usuario })
         if( !token ) return [ 500, "No se pudo generar el token" ]
 
         return [ 200, undefined, { usuario: { id: usuarioRegistrado.id, email: usuarioRegistrado.email, usuario: usuarioRegistrado.usuario }, token }]
+    }
+
+    public async perfil( id: number | null ){
+        if( !id ) return [ 400, `El ID ${ id } es invalido` ]
+
+        const usuario = await this.repoAuth.buscarPorId( id )
+        if( !usuario ) return [ 404, "El usuario no fue encontrado" ]
+        
+        return [ 200, undefined, usuario ]
+    }
+
+    public async perfilImg( url: any, data: Usuario ){
+        if( !url ) return [ 400, "No se pudo subir la imagen" ]
+        
+        const { id } = data
+        if( !id ) return [ 400, `No se encontro el ID ${ id }` ]
+
+        await this.repoAuth.subirImagen(url, id)
+        return [ 200, undefined, { message: "Foto actualizada", url } ]
     }
 }

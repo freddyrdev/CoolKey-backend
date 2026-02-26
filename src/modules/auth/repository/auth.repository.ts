@@ -1,3 +1,4 @@
+import format from "pg-format";
 import { database } from "../../../config/database.config.js";
 import type { Usuario } from "../interface.js";
 
@@ -19,5 +20,22 @@ export class AuthRepository {
         `
         const values = [ id, email, usuario ]
         return (await database.query(query, values)).rows[0]
+    }
+
+    public async buscarPorId(id: number){
+        const query = `
+            SELECT id, email, usuario, foto_perfil FROM usuarios WHERE id = $1
+        `
+        const values = [ id ]
+        return (await database.query(query, values)).rows[0]
+    }
+
+    public async subirImagen( foto_perfil: any, id: number ){
+        const query = `
+            UPDATE usuarios SET foto_perfil = $1 WHERE id = $2
+        `
+        const values = [ foto_perfil, id ]
+        
+        return await database.query(query, values)
     }
 }
