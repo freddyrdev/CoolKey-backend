@@ -18,6 +18,7 @@ export class Database{
                 email VARCHAR(100) UNIQUE NOT NULL,
                 usuario VARCHAR(100) NOT NULL,
                 contrasenia VARCHAR(100) NOT NULL,
+                foto_perfil VARCHAR(225),
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 

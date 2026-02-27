@@ -16,7 +16,7 @@ export class AuthService{
         const { email, contrasenia, usuario } = data
 
         if( !email ) return [ 400, "El email es requerido" ]
-        if( !regulatExps.email.test(email) ) return [ 400, "El formato del email es invalido" ]
+        if( !regulatExps.email.test(email.trim()) ) return [ 400, "El formato del email es invalido" ]
         if( !usuario ) return [ 400, "El usuario es requerido" ]
         if( !contrasenia ) return [ 400, "La contraseña es requerida" ]
         if( !contrasenia || contrasenia.length < 6  ) return [ 400, "La contraseña debe tener 6 caracteres" ]
