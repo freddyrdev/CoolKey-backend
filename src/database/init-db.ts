@@ -1,11 +1,11 @@
 import { database } from "../config/database.config.js"
 
 /*
-    DROP TABLE IF EXISTS detalle_pedido;
-    DROP TABLE IF EXISTS pedidos;
-    DROP TABLE IF EXISTS favoritos;
-    DROP TABLE IF EXISTS productos;
-    DROP TABLE IF EXISTS usuarios; 
+    DROP TABLE IF EXISTS detalle_pedido CASCADE;
+    DROP TABLE IF EXISTS pedidos CASCADE;
+    DROP TABLE IF EXISTS productos CASCADE;
+    DROP TABLE IF EXISTS favoritos CASCADE;
+    DROP TABLE IF EXISTS usuarios CASCADE;
 */
 
 export class Database{
@@ -24,11 +24,13 @@ export class Database{
 
             CREATE TABLE IF NOT EXISTS productos (
                 id SERIAL PRIMARY KEY,
-                nombre VARCHAR(75) NOT NULL,
+                nombre VARCHAR(150) NOT NULL,
                 descripcion TEXT,
-                precio NUMERIC(10,2) NOT NULL,
+                precio DECIMAL(10,2) NOT NULL,
                 imagen_url TEXT,
-                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                categoria VARCHAR(100),
+                stock INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
             CREATE TABLE IF NOT EXISTS favoritos (
