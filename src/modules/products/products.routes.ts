@@ -6,6 +6,7 @@ export class ProductsRoutes {
         const router = Router()
         const controller = new ProductsController()
 
+        // TODO: Poner los middlewares en las rutas post / put / delete
         router.get("/", controller.obtenerProductos )
         router.get("/:id", controller.obtenerProducto )
         router.post("/", controller.crearProducto )
