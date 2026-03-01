@@ -1,17 +1,26 @@
 import { database } from "../config/database.config.js"
 
 /*
+    Cada modificacion que se aga en modo de desarrollo
+    y no sea importante se ejecutara estas lineas para
+    facilitar los cambios de las tablas SQL
+
     DROP TABLE IF EXISTS detalle_pedido CASCADE;
     DROP TABLE IF EXISTS pedidos CASCADE;
     DROP TABLE IF EXISTS productos CASCADE;
     DROP TABLE IF EXISTS favoritos CASCADE;
     DROP TABLE IF EXISTS usuarios CASCADE;
+    DROP TABLE IF EXISTS carrito CASCADE;
 */
 
 export class Database{
     private tabla: string
 
     constructor(){
+        // Cada vez que ocurra una modificacion se debe
+        // agregar el SQL original en la carpeta migraciones
+        // y pausar el servidor asi no ocurriran errores futuros
+
         this.tabla = `
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY,
@@ -33,6 +42,17 @@ export class Database{
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
+            CREATE TABLE IF NOT EXISTS carrito (
+                id SERIAL PRIMARY KEY,
+                usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+                producto_id INT REFERENCES productos(id) ON DELETE CASCADE,
+                cantidad INT NOT NULL DEFAULT 1,
+                color_llavero VARCHAR(50),
+                texto_personalizado TEXT,
+                imagen_personalizada_url TEXT,
+                fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            
             CREATE TABLE IF NOT EXISTS favoritos (
                 id SERIAL PRIMARY KEY,
                 usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -54,7 +74,10 @@ export class Database{
                 pedido_id INT REFERENCES pedidos(id) ON DELETE CASCADE,
                 producto_id INT REFERENCES productos(id),
                 cantidad INT NOT NULL,
-                precio_unitario NUMERIC(10,2) NOT NULL
+                precio_unitario NUMERIC(10,2) NOT NULL,
+                color_elegido VARCHAR(50),
+                texto_elegido TEXT,
+                url_conjunto TEXT
             );
         `
     }
