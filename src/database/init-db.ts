@@ -50,7 +50,13 @@ export class Database{
                 color_llavero VARCHAR(50),
                 texto_personalizado TEXT,
                 imagen_personalizada_url TEXT,
-                fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT unique_product_selection UNIQUE (
+                    usuario_id, 
+                    producto_id, 
+                    color_llavero, 
+                    texto_personalizado
+                )
             );
             
             CREATE TABLE IF NOT EXISTS favoritos (
