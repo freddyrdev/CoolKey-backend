@@ -7,9 +7,9 @@ export class CartRoutes {
         const router = Router()
         const controller = new CartController()
 
-        router.get("/", [ AuthMiddleware.validarJWT ], controller.obtenerProducto )
-        router.post("/", [ AuthMiddleware.validarJWT ], controller.agregarProducto )
-        router.put("/:id", [ AuthMiddleware.validarJWT ], controller.actualizarProducto )
+        router.get("/", [ AuthMiddleware.validarJWT ], controller.obtenerCarrito )
+        router.post("/", [ AuthMiddleware.validarJWT ], controller.agregarCarrito )
+        router.put("/:id", [ AuthMiddleware.validarJWT ], controller.actualizarCantidad )
         router.delete("/:id", [ AuthMiddleware.validarJWT ], controller.eliminarItemID )
         router.delete("/vaciar", [ AuthMiddleware.validarJWT ], controller.eliminarTodoItem )
     
