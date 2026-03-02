@@ -7,7 +7,7 @@ export class AuthMiddleware {
     static async validarJWT( req: Request, res: Response, next: NextFunction ){
         const autorisacion = req.header('Authorization')
         if( !autorisacion ) return res.status(401).json({ error: "No hay ningun token verificado" })
-        if( !autorisacion.startsWith("Bearer ") ) return res.status(401).json({ error: "token 'bearer' no valido" })
+        if( !autorisacion.startsWith("Bearer ") ) return res.status(401).json({ error: "token 'Bearer' no valido" })
         
         const token = autorisacion.split(" ").at(1) || ''
 

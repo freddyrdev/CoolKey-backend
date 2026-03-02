@@ -18,6 +18,10 @@ export class CartService {
     }
     
     public agregarCarrito = async( data: Cart ) => {
+        if( !data.producto_id || isNaN(data.producto_id) ) return [ 400, "El ID del producto es invalido"]
+        if( !data.cantidad ) return [ 400, "La cantidad es requerida" ]
+        if( data.color_llavero.length > 50) return [ 400, "El color de llavero tiene caracteres excesivos" ]
+
         return [ 200, undefined, await this.repoCart.AgregarCarrito( data ) ]
     }
 

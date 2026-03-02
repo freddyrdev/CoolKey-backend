@@ -34,8 +34,8 @@ export class RepoCart {
                 p.nombre,
                 p.precio,
                 c.cantidad,
-                c,color_llavero,
-                c.personalizacion,
+                c.color_llavero,
+                c.texto_personalizado,
                 (p.precio * c.cantidad) AS subtotal
             FROM carrito c
             JOIN productos p ON c.producto_id = p.id
