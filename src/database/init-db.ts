@@ -15,6 +15,7 @@ import { database } from "../config/database.config.js"
 
 export class Database{
     private tabla: string
+    private productoSEED: any
 
     constructor(){
         // Cada vez que ocurra una modificacion se debe
@@ -47,8 +48,8 @@ export class Database{
                 usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
                 producto_id INT REFERENCES productos(id) ON DELETE CASCADE,
                 cantidad INT NOT NULL DEFAULT 1,
-                color_llavero VARCHAR(50),
-                texto_personalizado TEXT,
+                color_llavero VARCHAR(50) NOT NULL DEFAULT '',
+                texto_personalizado TEXT NOT NULL DEFAULT '',
                 imagen_personalizada_url TEXT,
                 fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT unique_product_selection UNIQUE (
@@ -58,7 +59,7 @@ export class Database{
                     texto_personalizado
                 )
             );
-            
+
             CREATE TABLE IF NOT EXISTS favoritos (
                 id SERIAL PRIMARY KEY,
                 usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -86,6 +87,32 @@ export class Database{
                 url_conjunto TEXT
             );
         `
+        this.productoSEED = [
+        {
+            nombre: 'Llavero de Resina Galaxia',
+            descripcion: 'Llavero personalizado con colores cósmicos y glitter.',
+            precio: 150.00,
+            imagen_url: 'https://ejemplo.com/foto1.jpg',
+            categoria: 'Llaveros',
+            stock: 20
+        },
+        {
+            nombre: 'Llavero Inicial Floral',
+            descripcion: 'Inicial transparente con flores secas reales dentro.',
+            precio: 120.50,
+            imagen_url: 'https://ejemplo.com/foto2.jpg',
+            categoria: 'Llaveros',
+            stock: 15
+        },
+        {
+            nombre: 'Llavero Spotify Code',
+            descripcion: 'Escanea el código para reproducir tu canción favorita.',
+            precio: 180.00,
+            imagen_url: 'https://ejemplo.com/foto3.jpg',
+            categoria: 'Personalizados',
+            stock: 50
+        }
+    ];
     }
 
     public async iniciar(){
@@ -94,6 +121,24 @@ export class Database{
             console.log("[DATABASE] La base de datos se ha iniciado exitosamente.")
         }catch (error: any){
             throw new Error(`Error al crear las tablas: ${ error }`)
+        }
+    }
+
+    public async iniciarSEED(){
+        try {
+            for (const p of this.productoSEED) {
+                const query = `
+                    INSERT INTO productos (nombre, descripcion, precio, imagen_url, categoria, stock)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    ON CONFLICT (id) DO NOTHING;
+                `;
+                const values = [ p.nombre, p.descripcion, p.precio, p.imagen_url, p.categoria, p.stock ];
+                await database.query(query, values);
+            }
+
+            console.log("[SEED] Se ha creado los productos exitosamente");
+        } catch (error) {
+            console.error("Error al cargar la seed:", error);
         }
     }
 }

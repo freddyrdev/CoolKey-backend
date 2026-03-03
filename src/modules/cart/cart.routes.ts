@@ -10,7 +10,7 @@ export class CartRoutes {
         router.get("/", [ AuthMiddleware.validarJWT ], controller.obtenerCarrito )
         router.post("/", [ AuthMiddleware.validarJWT ], controller.agregarCarrito )
         router.put("/:id", [ AuthMiddleware.validarJWT ], controller.actualizarCantidad )
-        router.delete("/:id", [ AuthMiddleware.validarJWT ], controller.eliminarItemID )
+        router.delete("/vaciar/:id", [ AuthMiddleware.validarJWT ], controller.eliminarItemID )
         router.delete("/vaciar", [ AuthMiddleware.validarJWT ], controller.eliminarTodoItem )
     
         return router

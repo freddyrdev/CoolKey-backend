@@ -22,6 +22,7 @@ export class Server{
     
     async start(){
         await this.database.iniciar()
+        // await this.database.iniciarSEED()
 
         this.app.use(cors({
             origin: ['http://localhost:5173', 'http://localhost:5174'],

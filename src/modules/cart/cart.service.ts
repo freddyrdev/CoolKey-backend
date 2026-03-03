@@ -30,7 +30,8 @@ export class CartService {
         if( !id || isNaN(id) ) return [ 400, `El ID ${ id } es invalido` ]
         if( !usuario_id || isNaN(usuario_id) ) return [ 404, `No se encontro el usuario solicitado` ]
 
-        return [ 200, undefined, await this.repoCart.actualizarCarrito(id, usuario_id, nuevaCantidad) ]
+        const consulta = await this.repoCart.actualizarCarrito(id, usuario_id, nuevaCantidad)
+        return [ 200, undefined, consulta ]
     }
 
     public eliminarItemID = async( id: number, usuario_id: number ) => {
@@ -38,6 +39,8 @@ export class CartService {
     }
 
     public eliminarTodoItem = async( usuario_id: number ) => {
+        if( !usuario_id || isNaN(usuario_id) ) return [ 422, "El ID del usuario es invalido" ]
+
         return [ 200, undefined, await this.repoCart.eliminarTodoItem( usuario_id ) ]
     }
 }

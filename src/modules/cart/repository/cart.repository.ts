@@ -20,8 +20,8 @@ export class RepoCart {
             data.usuario_id,
             data.producto_id,
             data.cantidad,
-            data.color_llavero,
-            data.texto_personalizado
+            data.color_llavero || '',
+            data.texto_personalizado || ''
         ]
 
         return (await database.query(query, values)).rows[0]
